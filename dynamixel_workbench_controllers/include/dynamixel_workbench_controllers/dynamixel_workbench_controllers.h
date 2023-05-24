@@ -48,10 +48,9 @@ typedef struct
   std::string item_name;
   int32_t value;
 } ItemValue;
-
 class DynamixelController
 {
- private:
+public:
   // ROS NodeHandle
   ros::NodeHandle node_handle_;
   ros::NodeHandle priv_node_handle_;

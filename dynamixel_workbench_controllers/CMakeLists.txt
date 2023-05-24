@@ -59,6 +59,7 @@ catkin_package(
  INCLUDE_DIRS include
  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs dynamixel_workbench_msgs trajectory_msgs dynamixel_workbench_toolbox cmake_modules
  DEPENDS EIGEN3
+ LIBRARIES dynamixel_workbench_controllers
 )
 
 ################################################################################
@@ -71,18 +72,24 @@ include_directories(
   ${YAML_CPP_INCLUDE_DIRS}
 )
 
-add_executable(dynamixel_workbench_controllers src/dynamixel_workbench_controllers.cpp src/trajectory_generator.cpp)
-add_dependencies(dynamixel_workbench_controllers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(dynamixel_workbench_controllers ${catkin_LIBRARIES} ${Eigen3_LIBRARIES} ${YAML_CPP_LIBRARIES})
+add_library(dynamixel_workbench_controllers
+        src/dynamixel_workbench_controllers.cpp
+        src/trajectory_generator.cpp
+)
+
+add_executable(dynamixel_workbench_controllers_exe src/dynamixel_workbench_controllers.cpp src/trajectory_generator.cpp)
+add_dependencies(dynamixel_workbench_controllers_exe ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dynamixel_workbench_controllers_exe ${catkin_LIBRARIES} ${Eigen3_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
 add_executable(find_dynamixel src/find_dynamixel.cpp)
 add_dependencies(find_dynamixel ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(find_dynamixel ${catkin_LIBRARIES})
 
+target_link_libraries(dynamixel_workbench_controllers ${catkin_LIBRARIES} ${Eigen3_LIBRARIES} ${YAML_CPP_LIBRARIES})
 #################################################################################
 ## Install
 #################################################################################
-install(TARGETS dynamixel_workbench_controllers find_dynamixel
+install(TARGETS dynamixel_workbench_controllers_exe find_dynamixel
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -94,6 +101,11 @@ install(DIRECTORY launch config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
+install(TARGETS dynamixel_workbench_controllers
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
 ################################################################################
 # Test
 ################################################################################
